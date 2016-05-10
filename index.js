@@ -1,8 +1,12 @@
 require("./fruit");
 var express = require('express');
 var mongoose = require('mongoose');
-var app = express();
 var Fruit = mongoose.model('Fruit');
+var bodyParser = require("body-parser");
+
+var app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 mongoose.connect('mongodb://localhost/myproject');
 
@@ -23,7 +27,7 @@ app.get('/list', function (req, res) {
 });
 
 app.post('/list', function(req, res) {
-	
+  console.log(req.body);
 	var fruit = new Fruit(req.body);
 	fruit.save(function(err, response){
 		if(err) console.log(err);
