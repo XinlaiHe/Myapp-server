@@ -6,7 +6,7 @@ var bodyParser = require("body-parser");
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/myproject');
 
@@ -27,10 +27,20 @@ app.get('/list', function (req, res) {
 });
 
 app.post('/list', function(req, res) {
-  console.log(req.body);
+
 	var fruit = new Fruit(req.body);
 	fruit.save(function(err, response){
 		if(err) console.log(err);
 		else res.json(fruit);
 	});
+  console.log('new item added');
+});
+
+app.delete('/list/:name', function(req, res){
+  var name = req.params.name;
+  Fruit.remove({name : name}, function(err){
+    if(err) console.log(err);
+    else res.json({name : name});
+  });
+  console.log("item delelted");
 });
