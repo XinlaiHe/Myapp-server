@@ -30,3 +30,20 @@ app.post('/list', function(req, res) {
 		else res.json(fruit);
 	});
 });
+
+app.delete('/list/:id', function(req, res){
+  var id = req.params.id;
+  Fruit.findIdAndRemove(id, function(err, response){
+    if(err) console.log(err);
+    else res.json(response);
+  });
+});
+
+app.put('/list/:id', function(req, res){
+  var id = req.params.id;
+  var name = req.body.name;  
+  Fruit.findIdAndUpdate(id, {$set:{name : name}}, function(err, response){
+    if(err) console.log(err);
+    else res.json(response);
+  });
+});
