@@ -1,8 +1,12 @@
 require("./fruit");
 var express = require('express');
 var mongoose = require('mongoose');
-var app = express();
 var Fruit = mongoose.model('Fruit');
+var bodyParser = require("body-parser");
+
+var app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/myproject');
 
@@ -19,24 +23,17 @@ app.get('/list', function (req, res) {
   	if(err) console.log(err);
   	else res.json(data);
   });
-  console.log("connected");
+  console.log("get item list");
 });
 
 app.post('/list', function(req, res) {
-	
+
 	var fruit = new Fruit(req.body);
 	fruit.save(function(err, response){
 		if(err) console.log(err);
 		else res.json(fruit);
 	});
-});
-
-app.delete('/list/:id', function(req, res){
-  var id = req.params.id;
-  Fruit.findIdAndRemove(id, function(err, response){
-    if(err) console.log(err);
-    else res.json(response);
-  });
+  console.log("new item added");
 });
 
 app.put('/list/:id', function(req, res){
@@ -46,4 +43,14 @@ app.put('/list/:id', function(req, res){
     if(err) console.log(err);
     else res.json(response);
   });
+  console.log("item updated");
+});
+
+app.delete('/list/:name', function(req, res){
+  var name = req.params.name;
+  Fruit.remove({name : name}, function(err){
+    if(err) console.log(err);
+    else res.json({name : name});
+  });
+  console.log("item deleted");
 });
