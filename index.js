@@ -5,8 +5,14 @@ var Fruit = mongoose.model('Fruit');
 var bodyParser = require("body-parser");
 
 var app = express();
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 mongoose.connect('mongodb://localhost/myproject');
 
@@ -38,7 +44,7 @@ app.post('/list', function(req, res) {
 
 app.put('/list/:id', function(req, res){
   var id = req.params.id;
-  var name = req.body.name;  
+  var name = req.body.name;
   Fruit.findIdAndUpdate(id, {$set:{name : name}}, function(err, response){
     if(err) console.log(err);
     else res.json(response);
