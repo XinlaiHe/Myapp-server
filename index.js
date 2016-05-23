@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
   next();
 });
 
@@ -33,11 +34,10 @@ app.get('/list', function (req, res) {
 });
 
 app.post('/list', function(req, res) {
-
 	var fruit = new Fruit(req.body);
 	fruit.save(function(err, response){
 		if(err) console.log(err);
-		else res.json(fruit);
+		else res.json(response);
 	});
   console.log("new item added");
 });
@@ -45,18 +45,18 @@ app.post('/list', function(req, res) {
 app.put('/list/:id', function(req, res){
   var id = req.params.id;
   var name = req.body.name;
-  Fruit.findIdAndUpdate(id, {$set:{name : name}}, function(err, response){
+  Fruit.findByIdAndUpdate(id, {$set:{name : name}}, function(err, response){
     if(err) console.log(err);
     else res.json(response);
   });
   console.log("item updated");
 });
 
-app.delete('/list/:name', function(req, res){
-  var name = req.params.name;
-  Fruit.remove({name : name}, function(err){
+app.delete('/list/:id', function(req, res){
+  var id = req.params.id;
+  Fruit.findByIdAndRemove(id, function(err, response){
     if(err) console.log(err);
-    else res.json({name : name});
+    else res.json(response);
   });
   console.log("item deleted");
 });
